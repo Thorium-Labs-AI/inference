@@ -69,6 +69,6 @@ jobs:
           name: my-cloudformation-stack
           template: ./ci/aws.yml
           capabilities: CAPABILITY_IAM
-
           parameter-overrides: |
             ImageURL=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+
