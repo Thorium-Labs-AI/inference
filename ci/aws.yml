@@ -1,4 +1,3 @@
----
 AWSTemplateFormatVersion: "2010-09-09"
 
 Parameters:
@@ -34,13 +33,13 @@ Resources:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
 
-  PublicSubnet:
+  SubnetA:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
       CidrBlock: "10.0.1.0/24"
 
-  PrivateSubnet:
+  SubnetB:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
@@ -55,7 +54,7 @@ Resources:
     Type: AWS::EC2::NatGateway
     Properties:
       AllocationId: !GetAtt NatGatewayEIP.AllocationId
-      SubnetId: !Ref PublicSubnet
+      SubnetId: !Ref SubnetA
 
   RouteTable:
     Type: AWS::EC2::RouteTable
@@ -74,7 +73,7 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref RouteTable
-      SubnetId: !Ref PrivateSubnet
+      SubnetId: !Ref SubnetB
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -95,7 +94,6 @@ Resources:
           PortMappings:
             - ContainerPort: 8000
 
-
   Cluster:
     Type: AWS::ECS::Cluster
 
@@ -109,7 +107,7 @@ Resources:
       NetworkConfiguration:
         AwsvpcConfiguration:
           Subnets:
-            - !Ref PrivateSubnet
+            - !Ref SubnetB
           AssignPublicIp: ENABLED
 
   LoadBalancer:
@@ -117,11 +115,10 @@ Resources:
     Properties:
       Scheme: internet-facing
       Subnets:
-        - !Ref PublicSubnet
-        - !Ref PrivateSubnet
+        - !Ref SubnetA
+        - !Ref SubnetB
       SecurityGroups:
         - !GetAtt LoadBalancerSecurityGroup.GroupId
-
 
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -137,7 +134,7 @@ Resources:
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
-      Port: 8080
+      Port: 8000
       Protocol: HTTP
       VpcId: !Ref VPC
       TargetType: ip
@@ -149,7 +146,7 @@ Resources:
       Port: 443
       Protocol: HTTPS
       Certificates:
-        - CertificateArn: "arn:aws:acm:YOUR_REGION:YOUR_ACCOUNT_ID:certificate/YOUR_CERTIFICATE_ID"
+        - CertificateArn: "arn:aws:acm:us-east-1:883869506849:certificate/778ef356-1812-49e8-9bf1-9943a664e470"
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
@@ -162,3 +159,4 @@ Resources:
         - TargetGroupArn: !Ref TargetGroup
           ContainerPort: 8000
           ContainerName: example-container
+
