@@ -2,7 +2,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
 Parameters:
-  ECRImage:
+  ImageURL:
     Description: The name of the ECR image
     Type: String
 
@@ -73,7 +73,7 @@ Resources:
     Properties:
       ContainerDefinitions:
         - Name: example-container
-          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRImage}"
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ImageURL}"
           Essential: true
           PortMappings:
             - ContainerPort: 8080
