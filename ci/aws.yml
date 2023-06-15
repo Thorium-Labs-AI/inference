@@ -37,12 +37,14 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
       CidrBlock: "10.0.1.0/24"
 
   SubnetB:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs '' ]
       CidrBlock: "10.0.2.0/24"
 
   NatGatewayEIP:
