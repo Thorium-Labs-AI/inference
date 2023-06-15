@@ -12,6 +12,8 @@ permissions:
 
 env:
   ECR_REPOSITORY: chat-server
+  CF_STACK_NAME: ecs-fargate
+  CF_TEMPLATE_PATH: cloudformation.yml
 
 jobs:
   build-and-push:
@@ -58,7 +60,7 @@ jobs:
       - name: Deploy CloudFormation stack
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          stack-name: my-cloudformation-stack
-          template: path-to-your-template.yml
+          stack-name: ${{env.CF_STACK_NAME}}
+          template: ci/cloudformation.yml
           parameter-overrides: |
             ImageURL=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
