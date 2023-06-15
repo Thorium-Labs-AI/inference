@@ -15,7 +15,7 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
           - Effect: Allow
             Principal:
@@ -37,14 +37,14 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      AvailabilityZone: !Select [0, !GetAZs ""]
       CidrBlock: "10.0.1.0/24"
 
   SubnetB:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      AvailabilityZone: !Select [ 1, !GetAZs '' ]
+      AvailabilityZone: !Select [1, !GetAZs ""]
       CidrBlock: "10.0.2.0/24"
 
   NatGatewayEIP:
@@ -81,8 +81,8 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: chat-server-task-def
-      Cpu: '256'
-      Memory: '512'
+      Cpu: "256"
+      Memory: "512"
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE
@@ -109,8 +109,13 @@ Resources:
       NetworkConfiguration:
         AwsvpcConfiguration:
           Subnets:
+            - !Ref SubnetA
             - !Ref SubnetB
           AssignPublicIp: ENABLED
+      LoadBalancers:
+        - TargetGroupArn: !Ref TargetGroup
+          ContainerPort: 8000
+          ContainerName: chat-server
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -152,13 +157,3 @@ Resources:
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
-
-  ServiceLoadBalancer:
-    Type: AWS::ECS::Service
-    Properties:
-      ServiceName: !Ref Service
-      LoadBalancers:
-        - TargetGroupArn: !Ref TargetGroup
-          ContainerPort: 8000
-          ContainerName: example-container
-
