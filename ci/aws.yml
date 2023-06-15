@@ -16,25 +16,14 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
+        Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Principal:
-            Service: ecs-tasks.amazonaws.com
-          Action: sts:AssumeRole
-      Path: /
-      Policies:
-      - PolicyName: AmazonECSTaskExecutionRolePolicy
-        PolicyDocument:
-          Statement:
           - Effect: Allow
-            Action:
-            - ecr:GetAuthorizationToken
-            - ecr:BatchCheckLayerAvailability
-            - ecr:GetDownloadUrlForLayer
-            - ecr:BatchGetImage
-            - logs:CreateLogStream
-            - logs:PutLogEvents
-          Resource: '*'
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway
@@ -86,11 +75,6 @@ Resources:
     Properties:
       RouteTableId: !Ref RouteTable
       SubnetId: !Ref PrivateSubnet
-
-  ECRRepo:
-    Type: AWS::ECR::Repository
-    Properties:
-      RepositoryName: "YOUR_ECR_REPO"
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
