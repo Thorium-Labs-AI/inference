@@ -118,8 +118,10 @@ Resources:
       Scheme: internet-facing
       Subnets:
         - !Ref PublicSubnet
+        - !Ref PrivateSubnet
       SecurityGroups:
         - !GetAtt LoadBalancerSecurityGroup.GroupId
+
 
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
