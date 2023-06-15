@@ -67,7 +67,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: my-cloudformation-stack
-          template: ./template.yaml
+          template: ./ci/aws.yml
           capabilities: CAPABILITY_IAM
 
           parameter-overrides: |
