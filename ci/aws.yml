@@ -1,18 +1,17 @@
 ---
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 
 Parameters:
   ECRImage:
     Description: The name of the ECR image
     Type: String
 
-
 Resources:
   VPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: '10.0.0.0/16'
-  
+      CidrBlock: "10.0.0.0/16"
+
   InternetGateway:
     Type: AWS::EC2::InternetGateway
 
@@ -26,13 +25,13 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: '10.0.1.0/24'
-  
+      CidrBlock: "10.0.1.0/24"
+
   PrivateSubnet:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref VPC
-      CidrBlock: '10.0.2.0/24'
+      CidrBlock: "10.0.2.0/24"
 
   NatGatewayEIP:
     Type: AWS::EC2::EIP
@@ -55,7 +54,7 @@ Resources:
     DependsOn: GatewayAttachment
     Properties:
       RouteTableId: !Ref RouteTable
-      DestinationCidrBlock: '0.0.0.0/0'
+      DestinationCidrBlock: "0.0.0.0/0"
       GatewayId: !Ref InternetGateway
 
   SubnetRouteTableAssociation:
@@ -79,7 +78,6 @@ Resources:
           PortMappings:
             - ContainerPort: 8080
 
-
   Cluster:
     Type: AWS::ECS::Cluster
 
@@ -92,7 +90,7 @@ Resources:
       LaunchType: FARGATE
       NetworkConfiguration:
         AwsvpcConfiguration:
-          Subnets: 
+          Subnets:
             - !Ref PrivateSubnet
           AssignPublicIp: ENABLED
 
@@ -100,15 +98,11 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       Scheme: internet-facing
-      Subnets: 
+      Subnets:
         - !Ref PublicSubnet
       SecurityGroups:
         - !GetAtt LoadBalancerSecurityGroup.GroupId
 
-  LoadBalancerSecurityGroup:
-    Type: AWS::ECI apologize for the cut-off. Here's the rest of the CloudFormation template:
-
-```yaml
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -134,7 +128,7 @@ Resources:
       LoadBalancerArn: !Ref LoadBalancer
       Port: 443
       Protocol: HTTPS
-      Certificates: 
+      Certificates:
         - CertificateArn: "arn:aws:acm:YOUR_REGION:YOUR_ACCOUNT_ID:certificate/YOUR_CERTIFICATE_ID"
       DefaultActions:
         - Type: forward
@@ -146,6 +140,5 @@ Resources:
       ServiceName: !Ref Service
       LoadBalancers:
         - TargetGroupArn: !Ref TargetGroup
-          ContainerPort: 8080
+          ContainerPort: 8000
           ContainerName: example-container
-
