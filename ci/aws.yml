@@ -1,3 +1,8 @@
+Parameters:
+  ImageURL:
+    Description: The URL of the Docker image
+    Type: String
+
 Resources:
   VPC:
     Type: "AWS::EC2::VPC"
