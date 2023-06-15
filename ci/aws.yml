@@ -1,52 +1,90 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+
 Parameters:
-  ImageURL:
-    Description: The URL of the Docker image
+  ECRImage:
+    Description: The name of the ECR image
     Type: String
+
 
 Resources:
   VPC:
-    Type: "AWS::EC2::VPC"
+    Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: 10.0.0.0/16
-
-  Subnet:
-    Type: "AWS::EC2::Subnet"
-    Properties:
-      VpcId: !Ref VPC
-      CidrBlock: 10.0.0.0/24
-
+      CidrBlock: '10.0.0.0/16'
+  
   InternetGateway:
-    Type: "AWS::EC2::InternetGateway"
+    Type: AWS::EC2::InternetGateway
 
-  AttachGateway:
-    Type: "AWS::EC2::VPCGatewayAttachment"
+  GatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
     Properties:
       VpcId: !Ref VPC
       InternetGatewayId: !Ref InternetGateway
 
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: '10.0.1.0/24'
+  
+  PrivateSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: '10.0.2.0/24'
+
+  NatGatewayEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+
+  NatGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatGatewayEIP.AllocationId
+      SubnetId: !Ref PublicSubnet
+
   RouteTable:
-    Type: "AWS::EC2::RouteTable"
+    Type: AWS::EC2::RouteTable
     Properties:
       VpcId: !Ref VPC
 
-  Route:
-    Type: "AWS::EC2::Route"
+  DefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: GatewayAttachment
     Properties:
       RouteTableId: !Ref RouteTable
-      DestinationCidrBlock: 0.0.0.0/0
+      DestinationCidrBlock: '0.0.0.0/0'
       GatewayId: !Ref InternetGateway
 
   SubnetRouteTableAssociation:
-    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref Subnet
       RouteTableId: !Ref RouteTable
+      SubnetId: !Ref PrivateSubnet
+
+  ECRRepo:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: "YOUR_ECR_REPO"
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      ContainerDefinitions:
+        - Name: example-container
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRImage}"
+          Essential: true
+          PortMappings:
+            - ContainerPort: 8080
+
 
   Cluster:
-    Type: "AWS::ECS::Cluster"
+    Type: AWS::ECS::Cluster
 
   Service:
-    Type: "AWS::ECS::Service"
+    Type: AWS::ECS::Service
     Properties:
       Cluster: !Ref Cluster
       DesiredCount: 1
@@ -54,47 +92,60 @@ Resources:
       LaunchType: FARGATE
       NetworkConfiguration:
         AwsvpcConfiguration:
-          Subnets:
-            - !Ref Subnet
+          Subnets: 
+            - !Ref PrivateSubnet
           AssignPublicIp: ENABLED
 
-  TaskDefinition:
-    Type: "AWS::ECS::TaskDefinition"
-    Properties:
-      Cpu: "256"
-      Memory: "512"
-      NetworkMode: awsvpc
-      RequiresCompatibilities:
-        - FARGATE
-      ContainerDefinitions:
-        - Name: chat-server
-          Image: !Ref ImageURL
-          PortMappings:
-            - ContainerPort: 80
-              HostPort: 80
-              Protocol: tcp
-
   LoadBalancer:
-    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Subnets:
-        - !Ref Subnet
       Scheme: internet-facing
+      Subnets: 
+        - !Ref PublicSubnet
+      SecurityGroups:
+        - !GetAtt LoadBalancerSecurityGroup.GroupId
+
+  LoadBalancerSecurityGroup:
+    Type: AWS::ECI apologize for the cut-off. Here's the rest of the CloudFormation template:
+
+```yaml
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for Load Balancer
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Port: 8080
+      Protocol: HTTP
+      VpcId: !Ref VPC
+      TargetType: ip
 
   Listener:
-    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       LoadBalancerArn: !Ref LoadBalancer
-      Protocol: HTTP
-      Port: 80
+      Port: 443
+      Protocol: HTTPS
+      Certificates: 
+        - CertificateArn: "arn:aws:acm:YOUR_REGION:YOUR_ACCOUNT_ID:certificate/YOUR_CERTIFICATE_ID"
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
 
-  TargetGroup:
-    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+  ServiceLoadBalancer:
+    Type: AWS::ECS::Service
     Properties:
-      Port: 80
-      Protocol: HTTP
-      VpcId: !Ref VPC
-      TargetType: ip
+      ServiceName: !Ref Service
+      LoadBalancers:
+        - TargetGroupArn: !Ref TargetGroup
+          ContainerPort: 8080
+          ContainerName: example-container
+
