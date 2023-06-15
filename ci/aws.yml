@@ -69,23 +69,23 @@ Resources:
       RepositoryName: "YOUR_ECR_REPO"
 
   TaskDefinition:
-  Type: AWS::ECS::TaskDefinition
-  Properties:
-    Family: chat-server-task-def
-    Cpu: '256'
-    Memory: '512'
-    NetworkMode: awsvpc
-    RequiresCompatibilities:
-      - FARGATE
-    #ExecutionRoleArn: !Ref ExecutionRole
-    ContainerDefinitions:
-      - Name: chat-server
-        Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ImageURL}"
-        Essential: true
-        Memory: 256
-        MemoryReservation: 128
-        PortMappings:
-          - ContainerPort: 8000
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: chat-server-task-def
+      Cpu: '256'
+      Memory: '512'
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      #ExecutionRoleArn: !Ref ExecutionRole
+      ContainerDefinitions:
+        - Name: chat-server
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ImageURL}"
+          Essential: true
+          Memory: 256
+          MemoryReservation: 128
+          PortMappings:
+            - ContainerPort: 8000
 
 
   Cluster:
