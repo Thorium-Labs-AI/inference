@@ -101,6 +101,8 @@ Resources:
 
   Service:
     Type: AWS::ECS::Service
+    DependsOn: 
+      - Listener
     Properties:
       Cluster: !Ref Cluster
       DesiredCount: 1
