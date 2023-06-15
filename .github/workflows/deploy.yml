@@ -26,8 +26,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
           role-session-name: GitHub-OIDC
 
       - name: Login to Amazon ECR
@@ -39,8 +39,14 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
+          docker build \
+            --build-arg PINECONE_KEY=${{ secrets.PINECONE_KEY }} \
+            --build-arg OPENAI_KEY=${{ secrets.OPENAI_KEY }} \
+            --build-arg DYNAMODB_KEY=${{ secrets.DYNAMODB_KEY }} \
+            --build-arg AUTH0_KEY=${{ secrets.AUTH0_KEY }} \
+            -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
+
 
   deploy-cloudformation:
     needs: build-and-push
