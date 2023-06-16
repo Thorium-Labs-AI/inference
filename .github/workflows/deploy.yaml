@@ -22,14 +22,14 @@ env:
   TASK_EXECUTION_ROLE_ARN: arn:aws:iam::883869506849:role/lambdas-te-task-execution-role
   CONTAINER_NAME: your-container-name
   CONTAINER_PORT: 8000
-  SERVICE_NAME: chat-server
+  SERVICE_NAME: chat-server-service
   DESIRED_COUNT: 1
   SECURITY_GROUP: your-security-group
-  SUBNET1: your-subnet-1
-  SUBNET2: your-subnet-2
-  LOAD_BALANCER_NAME: your-load-balancer-name
-  CERTIFICATE_ARN: your-certificate-arn
-  TARGET_GROUP_NAME: your-target-group-name
+  SUBNET1: ${{ AWS_REGION }}-a
+  SUBNET2: ${{ AWS_REGION }}-b
+  LOAD_BALANCER_NAME: chat-server-lb
+  CERTIFICATE_ARN: ${{ vars.ACM_CERT_ARN }}
+  TARGET_GROUP_NAME: chat-tg
   VPC_ID: your-vpc-id
   DOMAIN_NAME: api.asterisk.chat
 
