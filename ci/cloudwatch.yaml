@@ -1,0 +1,47 @@
+Parameters:
+  LogGroupName:
+    Type: String
+    Description: The name of the log group.
+  LogStreamName:
+    Type: String
+    Description: The name of the log stream.
+
+Resources:
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Ref LogGroupName
+
+  LogStream:
+    Type: AWS::Logs::LogStream
+    Properties:
+      LogGroupName: !Ref LogGroupName
+      LogStreamName: !Ref LogStreamName
+
+  ExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CloudWatchLogsPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:${LogGroupName}:log-stream:${LogStreamName}
+
+Outputs:
+  LogGroupName:
+    Value: !Ref LogGroupName
+  LogStreamName:
+    Value: !Ref LogStreamName

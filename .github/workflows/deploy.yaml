@@ -85,7 +85,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: ChatServerLogsStack
-          template: ./ci/cloudwatch.yml
+          template: ./ci/cloudwatch.yaml
           capabilities: CAPABILITY_IAM
           parameter-overrides: >-
             LogGroupName=${{ env.LOG_GROUP_NAME }},
@@ -96,7 +96,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: ChatServerECSStack
-          template: ./ci/ecs.yml
+          template: ./ci/ecs.yaml
           capabilities: CAPABILITY_IAM
           parameter-overrides: >-
             ClusterName=${{ env.CLUSTER_NAME }},
@@ -118,7 +118,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: ChatServerELBStack
-          template: ./ci/elb.yml
+          template: ./ci/elb.yaml
           capabilities: CAPABILITY_IAM
           parameter-overrides: >-
             LoadBalancerName=${{ env.LOAD_BALANCER_NAME }},
@@ -135,7 +135,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
           name: ChatServerR53Stack
-          template: ./ci/r53.yml
+          template: ./ci/r53.yaml
           capabilities: CAPABILITY_IAM
           parameter-overrides: >-
             DomainName=${{ env.DOMAIN_NAME }}
