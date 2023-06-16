@@ -14,7 +14,7 @@ env:
   ECR_REPOSITORY: chat-server
   CF_STACK_NAME: ecs-fargate
   LOG_GROUP_NAME: ecs/chat-server
-  LOG_STREAM_NAME: ${{ github.sha }}
+  LOG_STREAM_NAME: logs
   LOG_GROUP_POLICY_NAME: chat-server-group-policy
   CLUSTER_NAME: chat-server
   TASK_FAMILY: chat-server-task-family
