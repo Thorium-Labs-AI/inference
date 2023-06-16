@@ -14,6 +14,7 @@ env:
   ECR_REPOSITORY: chat-server
   CF_STACK_NAME: ecs-fargate
   LOG_GROUP_NAME: ecs/chat-server
+  LOG_STREAM_NAME: ${{ github.sha }}
   LOG_GROUP_POLICY_NAME: chat-server-group-policy
   CLUSTER_NAME: chat-server
   TASK_FAMILY: chat-server-task-family
@@ -89,7 +90,7 @@ jobs:
           capabilities: CAPABILITY_IAM
           parameter-overrides: |
             LogGroupName=${{ env.LOG_GROUP_NAME }}
-            LogStreamName=${{ github.sha }}
+            LogStreamName=${{ env.LOG_STREAM_NAME }}
             LogGroupPolicyName=${{ env.LOG_GROUP_POLICY_NAME }}
 
       - name: Deploy ECS to AWS CloudFormation
