@@ -97,6 +97,5 @@ Resources:
 
 Outputs:
   ServiceName:
-    Value: !Ref ServiceName
-  LoadBalancerDNSName:
-    Value: !Ref LoadBalancerDNSName
+    Description: The name of the created service.
+    Value: !GetAtt Service.Name
