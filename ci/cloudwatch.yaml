@@ -14,6 +14,7 @@ Resources:
 
   LogStream:
     Type: AWS::Logs::LogStream
+    DependsOn: LogGroup
     Properties:
       LogGroupName: !Ref LogGroupName
       LogStreamName: !Ref LogStreamName
