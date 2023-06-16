@@ -87,7 +87,7 @@ jobs:
           name: ChatServerLogsStack
           template: ./ci/cloudwatch.yml
           capabilities: CAPABILITY_IAM
-          parameter-overrides: |
+          parameter-overrides: >-
             LogGroupName=${{ env.LOG_GROUP_NAME }}, \
             LogStreamName=${{ github.sha }}, \
             LogGroupPolicyName=${{ env.LOG_GROUP_POLICY_NAME }}
@@ -98,7 +98,7 @@ jobs:
           name: ChatServerECSStack
           template: ./ci/ecs.yml
           capabilities: CAPABILITY_IAM
-          parameter-overrides: |
+          parameter-overrides: >-
             ClusterName=${{ env.CLUSTER_NAME }},
             TaskFamily=${{ env.TASK_FAMILY }},
             TaskCpu=${{ env.TASK_CPU }},
@@ -120,7 +120,7 @@ jobs:
           name: ChatServerELBStack
           template: ./ci/elb.yml
           capabilities: CAPABILITY_IAM
-          parameter-overrides: |
+          parameter-overrides: >-
             LoadBalancerName=${{ env.LOAD_BALANCER_NAME }},
             Subnet1=${{ env.SUBNET1 }},
             Subnet2=${{ env.SUBNET2 }},
@@ -137,5 +137,5 @@ jobs:
           name: ChatServerR53Stack
           template: ./ci/r53.yml
           capabilities: CAPABILITY_IAM
-          parameter-overrides: |
+          parameter-overrides: >-
             DomainName=${{ env.DOMAIN_NAME }}
