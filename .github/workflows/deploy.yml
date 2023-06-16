@@ -88,8 +88,8 @@ jobs:
           template: ./ci/cloudwatch.yml
           capabilities: CAPABILITY_IAM
           parameter-overrides: >-
-            LogGroupName=${{ env.LOG_GROUP_NAME }}, \
-            LogStreamName=${{ github.sha }}, \
+            LogGroupName=${{ env.LOG_GROUP_NAME }},
+            LogStreamName=${{ github.sha }},
             LogGroupPolicyName=${{ env.LOG_GROUP_POLICY_NAME }}
 
       - name: Deploy ECS to AWS CloudFormation
