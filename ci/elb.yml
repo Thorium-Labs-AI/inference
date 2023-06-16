@@ -1,3 +1,33 @@
+Parameters:
+  LoadBalancerName:
+    Type: String
+    Description: The name of the load balancer.
+  Subnet1:
+    Type: String
+    Description: The first subnet of the load balancer.
+  Subnet2:
+    Type: String
+    Description: The second subnet of the load balancer.
+  SecurityGroup:
+    Type: String
+    Description: The security group of the load balancer.
+  CertificateArn:
+    Type: String
+    Description: The certificate ARN of the load balancer.
+  TargetGroupName:
+    Type: String
+    Description: The target group name of the load balancer.
+  ContainerPort:
+    Type: Number
+    Description: The port of the container.
+  VpcId:
+    Type: String
+    Description: The VPC ID of the load balancer.
+  DomainName:
+    Type: String
+    Description: The domain name of the load balancer.
+
+
 Resources:
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer

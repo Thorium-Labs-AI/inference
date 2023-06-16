@@ -1,3 +1,8 @@
+Parameters:
+  DomainName:
+    Type: String
+    Description: The domain name for Route53.
+
 Resources:
   HostedZone:
     Type: AWS::Route53::HostedZone
