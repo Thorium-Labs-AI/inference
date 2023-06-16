@@ -25,8 +25,8 @@ env:
   SERVICE_NAME: chat-server-service
   DESIRED_COUNT: 1
   SECURITY_GROUP: your-security-group
-  SUBNET1: ${{ AWS_REGION }}-a
-  SUBNET2: ${{ AWS_REGION }}-b
+  SUBNET1: ${{ vars.AWS_REGION }}-a
+  SUBNET2: ${{ vars.AWS_REGION }}-b
   LOAD_BALANCER_NAME: chat-server-lb
   CERTIFICATE_ARN: ${{ vars.ACM_CERT_ARN }}
   TARGET_GROUP_NAME: chat-tg
