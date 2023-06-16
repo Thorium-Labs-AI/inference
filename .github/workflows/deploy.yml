@@ -13,7 +13,26 @@ permissions:
 env:
   ECR_REPOSITORY: chat-server
   CF_STACK_NAME: ecs-fargate
-  CF_TEMPLATE_PATH: cloudformation.yml
+  LOG_GROUP_NAME: ecs/chat-server
+  LOG_GROUP_POLICY_NAME: chat-server-group-policy
+  CLUSTER_NAME: chat-server
+  TASK_FAMILY: chat-server-task-family
+  TASK_CPU: 256
+  TASK_MEMORY: 512
+  TASK_EXECUTION_ROLE_ARN: arn:aws:iam::883869506849:role/lambdas-te-task-execution-role
+  CONTAINER_NAME: your-container-name
+  CONTAINER_PORT: 8000
+  SERVICE_NAME: chat-server
+  DESIRED_COUNT: 1
+  SECURITY_GROUP: your-security-group
+  SUBNET1: your-subnet-1
+  SUBNET2: your-subnet-2
+  LOAD_BALANCER_NAME: your-load-balancer-name
+  CERTIFICATE_ARN: your-certificate-arn
+  TARGET_GROUP_NAME: your-target-group-name
+  VPC_ID: your-vpc-id
+  DOMAIN_NAME: api.asterisk.chat
+
 
 jobs:
   build-and-push:
@@ -47,7 +66,6 @@ jobs:
             -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
 
-
   deploy-cloudformation:
     needs: build-and-push
     runs-on: ubuntu-latest
@@ -63,12 +81,61 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
           role-session-name: GitHub-OIDC
 
-      - name: Deploy to AWS CloudFormation
+      - name: Deploy Logs to AWS CloudFormation
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:
-          name: ChatServerStack
-          template: ./ci/aws.yml
+          name: ChatServerLogsStack
+          template: ./ci/cloudwatch.yml
           capabilities: CAPABILITY_IAM
           parameter-overrides: |
-            ImageURL=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+            LogGroupName=${{ env.LOG_GROUP_NAME }}
+            LogStreamName=${{ github.sha }}
+            LogGroupPolicyName=${{ env.LOG_GROUP_POLICY_NAME }}
 
+      - name: Deploy ECS to AWS CloudFormation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: ChatServerECSStack
+          template: ./ci/ecs.yml
+          capabilities: CAPABILITY_IAM
+          parameter-overrides: |
+            ClusterName=${{ env.CLUSTER_NAME }}
+            TaskFamily=${{ env.TASK_FAMILY }}
+            TaskCpu=${{ env.TASK_CPU }}
+            TaskMemory=${{ env.TASK_MEMORY }}
+            TaskExecutionRoleArn=${{ env.TASK_EXECUTION_ROLE_ARN }}
+            ContainerName=${{ env.CONTAINER_NAME }}
+            ContainerImage=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+            ContainerPort=${{ env.CONTAINER_PORT }}
+            ServiceName=${{ env.SERVICE_NAME }}
+            DesiredCount=${{ env.DESIRED_COUNT }}
+            SecurityGroup=${{ env.SECURITY_GROUP }}
+            Subnet1=${{ env.SUBNET1 }}
+            Subnet2=${{ env.SUBNET2 }}
+            LogGroupName=${{ env.LOG_GROUP_NAME }}
+
+      - name: Deploy ELB to AWS CloudFormation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: ChatServerELBStack
+          template: ./ci/elb.yml
+          capabilities: CAPABILITY_IAM
+          parameter-overrides: |
+            LoadBalancerName=${{ env.LOAD_BALANCER_NAME }}
+            Subnet1=${{ env.SUBNET1 }}
+            Subnet2=${{ env.SUBNET2 }}
+            SecurityGroup=${{ env.SECURITY_GROUP }}
+            CertificateArn=${{ env.CERTIFICATE_ARN }}
+            TargetGroupName=${{ env.TARGET_GROUP_NAME }}
+            ContainerPort=${{ env.CONTAINER_PORT }}
+            VpcId=${{ env.VPC_ID }}
+            DomainName=${{ env.DOMAIN_NAME }}
+
+      - name: Deploy Route53 to AWS CloudFormation
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: ChatServerR53Stack
+          template: ./ci/r53.yml
+          capabilities: CAPABILITY_IAM
+          parameter-overrides: |
+            DomainName=${{ env.DOMAIN_NAME }}
