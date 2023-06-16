@@ -95,13 +95,25 @@ Resources:
           MemoryReservation: 128
           PortMappings:
             - ContainerPort: 8000
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref CloudWatchLogsGroup
+              awslogs-region: !Ref "AWS::Region"
+              awslogs-stream-prefix: chat-server
+
+  CloudWatchLogsGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /ecs/chat-server
+      RetentionInDays: 14
 
   Cluster:
     Type: AWS::ECS::Cluster
 
   Service:
     Type: AWS::ECS::Service
-    DependsOn: 
+    DependsOn:
       - Listener
     Properties:
       Cluster: !Ref Cluster
