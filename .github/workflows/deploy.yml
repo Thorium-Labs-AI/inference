@@ -14,7 +14,6 @@ env:
   ECR_REPOSITORY: chat-server
   CF_STACK_NAME: ecs-fargate
   LOG_GROUP_NAME: ecs/chat-server
-  LOG_STREAM_NAME: logs
   LOG_GROUP_POLICY_NAME: chat-server-group-policy
   CLUSTER_NAME: chat-server
   TASK_FAMILY: chat-server-task-family
@@ -89,8 +88,8 @@ jobs:
           template: ./ci/cloudwatch.yml
           capabilities: CAPABILITY_IAM
           parameter-overrides: |
-            LogGroupName=${{ env.LOG_GROUP_NAME }}
-            LogStreamName=${{ env.LOG_STREAM_NAME }}
+            LogGroupName=${{ env.LOG_GROUP_NAME }}, \
+            LogStreamName=${{ github.sha }}, \
             LogGroupPolicyName=${{ env.LOG_GROUP_POLICY_NAME }}
 
       - name: Deploy ECS to AWS CloudFormation
@@ -100,19 +99,19 @@ jobs:
           template: ./ci/ecs.yml
           capabilities: CAPABILITY_IAM
           parameter-overrides: |
-            ClusterName=${{ env.CLUSTER_NAME }}
-            TaskFamily=${{ env.TASK_FAMILY }}
-            TaskCpu=${{ env.TASK_CPU }}
-            TaskMemory=${{ env.TASK_MEMORY }}
-            TaskExecutionRoleArn=${{ env.TASK_EXECUTION_ROLE_ARN }}
-            ContainerName=${{ env.CONTAINER_NAME }}
-            ContainerImage=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
-            ContainerPort=${{ env.CONTAINER_PORT }}
-            ServiceName=${{ env.SERVICE_NAME }}
-            DesiredCount=${{ env.DESIRED_COUNT }}
-            SecurityGroup=${{ env.SECURITY_GROUP }}
-            Subnet1=${{ env.SUBNET1 }}
-            Subnet2=${{ env.SUBNET2 }}
+            ClusterName=${{ env.CLUSTER_NAME }},
+            TaskFamily=${{ env.TASK_FAMILY }},
+            TaskCpu=${{ env.TASK_CPU }},
+            TaskMemory=${{ env.TASK_MEMORY }},
+            TaskExecutionRoleArn=${{ env.TASK_EXECUTION_ROLE_ARN }},
+            ContainerName=${{ env.CONTAINER_NAME }},
+            ContainerImage=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }},
+            ContainerPort=${{ env.CONTAINER_PORT }},
+            ServiceName=${{ env.SERVICE_NAME }},
+            DesiredCount=${{ env.DESIRED_COUNT }},
+            SecurityGroup=${{ env.SECURITY_GROUP }},
+            Subnet1=${{ env.SUBNET1 }},
+            Subnet2=${{ env.SUBNET2 }},
             LogGroupName=${{ env.LOG_GROUP_NAME }}
 
       - name: Deploy ELB to AWS CloudFormation
@@ -122,14 +121,14 @@ jobs:
           template: ./ci/elb.yml
           capabilities: CAPABILITY_IAM
           parameter-overrides: |
-            LoadBalancerName=${{ env.LOAD_BALANCER_NAME }}
-            Subnet1=${{ env.SUBNET1 }}
-            Subnet2=${{ env.SUBNET2 }}
-            SecurityGroup=${{ env.SECURITY_GROUP }}
-            CertificateArn=${{ env.CERTIFICATE_ARN }}
-            TargetGroupName=${{ env.TARGET_GROUP_NAME }}
-            ContainerPort=${{ env.CONTAINER_PORT }}
-            VpcId=${{ env.VPC_ID }}
+            LoadBalancerName=${{ env.LOAD_BALANCER_NAME }},
+            Subnet1=${{ env.SUBNET1 }},
+            Subnet2=${{ env.SUBNET2 }},
+            SecurityGroup=${{ env.SECURITY_GROUP }},
+            CertificateArn=${{ env.CERTIFICATE_ARN }},
+            TargetGroupName=${{ env.TARGET_GROUP_NAME }},
+            ContainerPort=${{ env.CONTAINER_PORT }},
+            VpcId=${{ env.VPC_ID }},
             DomainName=${{ env.DOMAIN_NAME }}
 
       - name: Deploy Route53 to AWS CloudFormation
