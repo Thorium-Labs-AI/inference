@@ -89,8 +89,7 @@ jobs:
           capabilities: CAPABILITY_IAM
           parameter-overrides: >-
             LogGroupName=${{ env.LOG_GROUP_NAME }},
-            LogStreamName=${{ github.sha }},
-            LogGroupPolicyName=${{ env.LOG_GROUP_POLICY_NAME }}
+            LogStreamName=${{ github.sha }}
 
       - name: Deploy ECS to AWS CloudFormation
         uses: aws-actions/aws-cloudformation-github-deploy@v1
