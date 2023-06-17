@@ -25,8 +25,3 @@ resource "aws_route53_record" "root" {
     evaluate_target_health = true
   }
 }
-
-
-resource aws_acm_certificate acm_certificate {
-  certificate_authority_arn = "arn:aws:acm:us-east-1:883869506849:certificate/778ef356-1812-49e8-9bf1-9943a664e470"
-}

@@ -23,15 +23,16 @@ resource aws_alb_target_group alb_target_group {
   }
 }
 
-resource aws_alb_listener alb_listener {
+resource "aws_alb_listener" "front_end" {
   load_balancer_arn = aws_alb.alb.arn
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = aws_acm_certificate.acm_certificate
+  certificate_arn   = "arn:aws:acm:us-east-1:883869506849:certificate/778ef356-1812-49e8-9bf1-9943a664e470"
 
   default_action {
-    target_group_arn = aws_alb_target_group.alb_target_group.arn
     type             = "forward"
+    target_group_arn = aws_alb_target_group.alb_target_group.arn
   }
 }
+
