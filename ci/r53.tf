@@ -14,9 +14,9 @@ resource "aws_route53_record" "www" {
   }
 }
 
-resource "aws_route53_record" "root" {
+data "aws_route53_record" "root" {
   zone_id = data.aws_route53_zone.main.zone_id
-  name    = "asterisk.chat"
+  name    = "api.asterisk.chat"
   type    = "A"
 
   alias {
