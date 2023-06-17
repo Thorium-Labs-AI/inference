@@ -17,17 +17,31 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Plan
+      - name: Terraform Format
+        id: format
+        continue-on-error: true
+        run: terraform fmt
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: tf-plan
         run: terraform plan
 
-      - name: Validate
-        run: terraform validate
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
 
-      - name: Apply
+      - name: Terraform Apply
         run: terraform apply
-
-      - name: Destroy
-        run: terraform destroy
