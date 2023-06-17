@@ -11,7 +11,7 @@ resource aws_ecs_task_definition task_definition {
   container_definitions = <<DEFINITION
 [{
     "name": "site",
-    "image": "${var.ecr_image}",
+    "image": "${var.ecr_repository}:${var.ecr_image}",
     "cpu": 0,
     "essential": true,
     "networkMode": "awsvpc",
