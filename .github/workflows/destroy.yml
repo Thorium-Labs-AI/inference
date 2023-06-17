@@ -13,6 +13,7 @@ jobs:
   terraform:
     name: "Terraform Destroy"
     runs-on: ubuntu-latest
+    working-directory: ./ci
     permissions:
       contents: read
     steps:
