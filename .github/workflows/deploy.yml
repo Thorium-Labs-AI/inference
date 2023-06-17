@@ -1,7 +1,9 @@
-name: Deploy
+name: Build, Push, Plan
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 permissions:
   id-token: write
@@ -9,21 +11,18 @@ permissions:
   pull-requests: write
 
 env:
+  ECR_REPOSITORY: chat-server
   TF_CLOUD_ORGANIZATION: "AsteriskChat"
   TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
   TF_WORKSPACE: chat-server
   CONFIG_DIRECTORY: ./ci
 
-jobs:
-  terraform:
-    name: "Terraform Apply"
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
 
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
