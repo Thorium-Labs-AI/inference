@@ -19,5 +19,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Plan
+        run: terraform plan
+
+      - name: Validate
+        run: terraform validate
+
+      - name: Apply
+        run: terraform apply
+
       - name: Destroy
         run: terraform destroy
