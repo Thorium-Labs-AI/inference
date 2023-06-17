@@ -1,4 +1,4 @@
-name: Build Docker image, Push to AWS ECR and Deploy CloudFormation
+name: Build, Push, Plan
 
 on:
   push:
