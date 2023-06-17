@@ -16,44 +16,43 @@ jobs:
     permissions:
       contents: read
     steps:
-steps:
-  - name: Checkout code
-    uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-  - name: Setup Terraform
-    uses: hashicorp/setup-terraform@v2
-    with:
-      cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-  - name: Terraform Format
-    id: format
-    continue-on-error: true
-    run: terraform fmt
-    working-directory: ./ci
+      - name: Terraform Format
+        id: format
+        continue-on-error: true
+        run: terraform fmt
+        working-directory: ./ci
 
-  - name: Terraform Init
-    id: init
-    run: terraform init
-    working-directory: ./ci
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: ./ci
 
-  - name: Terraform Validate
-    id: validate
-    run: terraform validate -no-color
-    working-directory: ./ci
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ./ci
 
-  - name: Terraform Plan
-    id: tf-plan
-    run: terraform plan
-    working-directory: ./ci
+      - name: Terraform Plan
+        id: tf-plan
+        run: terraform plan
+        working-directory: ./ci
 
-  - name: Terraform Plan Status
-    if: steps.plan.outcome == 'failure'
-    run: exit 1
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
 
-  - name: Terraform Apply
-    run: terraform apply
-    working-directory: ./ci
+      - name: Terraform Apply
+        run: terraform apply
+        working-directory: ./ci
 
-  - name: Terraform Destroy
-    run: terraform destroy
-    working-directory: ./ci
+      - name: Terraform Destroy
+        run: terraform destroy
+        working-directory: ./ci
