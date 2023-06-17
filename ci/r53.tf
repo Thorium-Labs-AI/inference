@@ -3,7 +3,7 @@ data "aws_route53_zone" "main" {
 }
 
 resource "aws_route53_record" "www" {
-  zone_id = aws_route53_zone.main.zone_id
+  zone_id = data.aws_route53_zone.main.zone_id
   name    = "www.api.asterisk.chat"
   type    = "A"
 
@@ -15,7 +15,7 @@ resource "aws_route53_record" "www" {
 }
 
 resource "aws_route53_record" "root" {
-  zone_id = aws_route53_zone.main.zone_id
+  zone_id = data.aws_route53_zone.main.zone_id
   name    = "asterisk.chat"
   type    = "A"
 
