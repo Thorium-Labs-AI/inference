@@ -74,7 +74,3 @@ jobs:
       - name: Terraform Apply
         run: terraform apply --auto-approve
         working-directory: ./ci
-
-      - name: Terraform Destroy
-        run: terraform destroy
-        working-directory: ./ci
