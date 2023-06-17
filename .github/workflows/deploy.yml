@@ -41,24 +41,40 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: echo "ecr_image = \"$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG\"" > ./ci/terraform.tfvars
 
-      - name: Upload Configuration
-        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-        id: apply-upload
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
         with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          directory: ${{ env.CONFIG_DIRECTORY }}
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Create Apply Run
-        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-        id: apply-run
-        with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
+      - name: Terraform Format
+        id: format
+        continue-on-error: true
+        run: terraform fmt
+        working-directory: ./ci
 
-      - name: Apply
-        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
-        if: fromJSON(steps.apply-run.outputs.payload).data.attributes.actions.IsConfirmable
-        id: apply
-        with:
-          run: ${{ steps.apply-run.outputs.run_id }}
-          comment: Apply Run from GitHub Actions CI ${{ github.sha }}
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: ./ci
+
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ./ci
+
+      - name: Terraform Plan
+        id: tf-plan
+        run: terraform plan
+        working-directory: ./ci
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        run: terraform apply --auto-approve
+        working-directory: ./ci
+
+      - name: Terraform Destroy
+        run: terraform destroy
+        working-directory: ./ci

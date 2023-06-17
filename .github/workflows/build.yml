@@ -50,27 +50,40 @@ jobs:
             -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
 
-      - name: Upload Configuration
-        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-        id: plan-upload
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
         with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          directory: ${{ env.CONFIG_DIRECTORY }}
-          speculative: true
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Create Plan Run
-        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-        id: plan-run
-        with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
-          plan_only: true
+      - name: Terraform Format
+        id: format
+        continue-on-error: true
+        run: terraform fmt
+        working-directory: ./ci
 
-      - name: Get Plan Output
-        uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.0
-        id: plan-output
-        with:
-          plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: ./ci
 
-      - name: Print Plan Output
-        run: echo "${{ steps.plan-output.outputs.stdout }}"
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        working-directory: ./ci
+
+      - name: Terraform Plan
+        id: tf-plan
+        run: terraform plan
+        working-directory: ./ci
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        run: terraform apply --auto-approve
+        working-directory: ./ci
+
+      - name: Terraform Destroy
+        run: terraform destroy
+        working-directory: ./ci
