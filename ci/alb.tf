@@ -23,7 +23,7 @@ resource aws_alb_target_group alb_target_group {
   }
 }
 
-resource "aws_alb_listener" "front_end" {
+resource "aws_alb_listener" "alb_listener" {
   load_balancer_arn = aws_alb.alb.arn
   port              = 443
   protocol          = "HTTPS"
