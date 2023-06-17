@@ -9,24 +9,24 @@ env:
   TF_WORKSPACE: chat-server
   CONFIG_DIRECTORY: ./ci
 
-permissions:
-  id-token: write
-  contents: read
-  pull-requests: write
-
 jobs:
   terraform:
     name: "Terraform Apply"
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}  # Note: Change vars to secrets
-          aws-region: ${{ secrets.AWS_REGION }}  # Note: Change vars to secrets
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
           role-session-name: GitHub-OIDC
 
       - name: Login to Amazon ECR
@@ -45,8 +45,6 @@ jobs:
 
       - name: Create Apply Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-        env:
-          TF_VAR_ecr_image: ${ECR_REGISTRY}/${{ env.ECR_REPOSITORY }}:${IMAGE_TAG}
         id: apply-run
         with:
           workspace: ${{ env.TF_WORKSPACE }}
