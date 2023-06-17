@@ -1,3 +1,7 @@
+variable AWS_SECRET_ACCESS_KEY {
+
+}
+
 variable project_name {
   default = "github-action-ecr"
 }
