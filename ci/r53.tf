@@ -1,4 +1,4 @@
-resource "aws_route53_zone" "main" {
+data "aws_route53_zone" "main" {
   name = "asterisk.chat"
 }
 
