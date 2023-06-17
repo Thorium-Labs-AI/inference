@@ -28,7 +28,7 @@ WORKDIR /src
 COPY . /src/
 
 # Expose the port the app runs in
-EXPOSE 8000
+EXPOSE 80
 
 # Serve the app with Uvicorn for production
-CMD ["uvicorn", "src.server.app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "src.server.app:app", "--host", "0.0.0.0", "--port", "80"]

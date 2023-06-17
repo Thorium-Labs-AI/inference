@@ -27,8 +27,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}  # Change vars to secrets
-          aws-region: ${{ vars.AWS_REGION }}  # Change vars to secrets
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
           role-session-name: GitHub-OIDC
 
       - name: Login to Amazon ECR
