@@ -1,5 +1,5 @@
 variable "AWS_SECRET_ACCESS_KEY" {
-  description = "The secret access key for AWS."
+
 }
 
 variable "project_name" {
