@@ -1,7 +1,7 @@
 name: Deploy
 
 on:
-  workflow-dispatch:
+  workflow_dispatch:
 
 permissions:
   id-token: write
@@ -27,8 +27,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}  # Change vars to secrets
+          aws-region: ${{ secrets.AWS_REGION }}  # Change vars to secrets
           role-session-name: GitHub-OIDC
 
       - name: Login to Amazon ECR
@@ -36,7 +36,10 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Write ECR Image to TFVars
-        run: echo "ecr_image = ${{ steps.login-ecr.outputs.registry }}/your_image_name:your_image_tag > ./ci/terraform.tfvars
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: echo "ecr_image = \"$ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG\"" > ./ci/terraform.tfvars
 
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
