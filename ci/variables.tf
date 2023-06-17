@@ -12,6 +12,8 @@ variable "region" {
 
 variable "ecr_image" {
   description = "The tag for the ECR image. Defaults to 'latest'."
+  type= "string"
+  default=""
 }
 
 variable "desired_count" {
