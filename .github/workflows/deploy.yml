@@ -1,19 +1,3 @@
-name: Deploy
-
-on:
-  workflow_dispatch:
-
-env:
-  TF_CLOUD_ORGANIZATION: "AsteriskChat"
-  TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
-  TF_WORKSPACE: chat-server
-  CONFIG_DIRECTORY: ./ci
-
-permissions:
-  id-token: write
-  contents: read
-  pull-requests: write
-
 jobs:
   terraform:
     name: "Terraform Apply"
@@ -25,13 +9,16 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}  # Note: Change vars to secrets
+          aws-region: ${{ secrets.AWS_REGION }}  # Note: Change vars to secrets
           role-session-name: GitHub-OIDC
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Write ECR Image to TFVars
+        run: echo "ecr_image = ${{ steps.login-ecr.outputs.registry }}/your_image_name:your_image_tag > ./ci/terraform.tfvars
 
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0

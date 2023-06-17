@@ -11,7 +11,7 @@ variable "region" {
 }
 
 variable "ecr_image" {
-  default = ""
+  default = "invalid_image"
 }
 
 variable "desired_count" {
