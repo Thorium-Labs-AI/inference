@@ -52,6 +52,8 @@ jobs:
         with:
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
+          args: '-var="ecr_image=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}"'
+
 
       - name: Apply
         uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0

@@ -71,3 +71,6 @@ jobs:
         id: plan-output
         with:
           plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
+
+      - name: Print Plan Output
+        run: echo "${{ steps.plan-output.outputs.stdout }}"
