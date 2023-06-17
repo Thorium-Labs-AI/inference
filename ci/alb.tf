@@ -8,18 +8,17 @@ resource aws_alb alb {
     Name = var.project_name
   }
 }
-
 resource aws_alb_target_group alb_target_group {
   name        = var.project_name
-  port        = 443
-  protocol    = "HTTPS"
+  port        = 80
+  protocol    = "HTTP"
   vpc_id      = aws_vpc.vpc.id
   target_type = "ip"
 
   health_check {
-    enabled = true
-    protocol = "HTTPS"
-    matcher = "200-399"
+    enabled  = true
+    protocol = "HTTP"
+    matcher  = "200-399"
   }
 }
 
@@ -35,4 +34,3 @@ resource "aws_alb_listener" "alb_listener" {
     target_group_arn = aws_alb_target_group.alb_target_group.arn
   }
 }
-
