@@ -1,3 +1,6 @@
+from src.service.models.vector import DatabaseVector
+
+
 class Database:
     def __init__(self):
         pass
@@ -22,6 +25,6 @@ class Database:
         raise NotImplementedError
         pass
 
-    def insert_vectors(self,  vectors: list, index_name: str):
+    def insert_vectors(self,  vectors: list[DatabaseVector], index_name: str):
         raise NotImplementedError
         pass
