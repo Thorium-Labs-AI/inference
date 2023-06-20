@@ -5,8 +5,8 @@ from src.service.chat_service import process_message, get_config_from_db
 
 router = APIRouter()
 
-class Message(BaseModel):
-    text: str
+class ChatRequest(BaseModel):
+    message: str
 
 
 @router.get("/")
@@ -18,8 +18,8 @@ async def get_chatbot_config(chatbot_id: str):
 
 
 @router.post("/message/", tags=["chatbot"])
-async def send_message_to_chatbot(message: Message):
-    response = process_message(message.text)
+async def send_message_to_chatbot(request: ChatRequest):
+    response = process_message(request.message)
     if response is None:
         raise HTTPException(status_code=404, detail="Chatbot could not retrieve a response.")
     return {"response": response}
