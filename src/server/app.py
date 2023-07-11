@@ -1,9 +1,20 @@
 from fastapi import FastAPI, Depends
+from starlette.middleware.cors import CORSMiddleware
+
 from .routers.requests import router as client_router
 from ..service.auth.authentication import authenticated
 
 app = FastAPI()
 app.include_router(client_router, prefix="/chat")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 @app.get("/")
