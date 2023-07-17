@@ -1,18 +1,17 @@
-from fastapi import APIRouter, HTTPException, Depends
+from typing import Optional
+
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from src.service.auth.authentication import authenticated
 from src.service.chat_service import process_message
+from src.service.models.InputPayloadModels import ChatRequestPayload
 
 router = APIRouter()
 
 
-class ChatRequest(BaseModel):
-    message: str
-
 @router.post("/message/", tags=["chatbot"])
-async def send_message_to_chatbot(request: ChatRequest):
-    response = process_message(request.message)
+async def send_message_to_chatbot(request: ChatRequestPayload):
+    response = process_message(request)
     if response is None:
         raise HTTPException(status_code=404, detail="Chatbot could not retrieve a response.")
     return {"response": response}

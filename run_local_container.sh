@@ -3,9 +3,10 @@
 # Convert the environment variables in .env to --build-arg options
 BUILD_ARGS=$(awk -F= '{print "--build-arg " $1 "=" $2}' .env)
 
-# Docker build command with build arguments
 docker build $BUILD_ARGS -t chat_server .
 
-# Docker run command
-docker run -d -p 8000:8000 chat_server
+docker stop chat_server_container
+docker rm chat_server_container
+docker run -d --name chat_server_container -p 8000:80 chat_server
+
 
