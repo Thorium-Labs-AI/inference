@@ -15,7 +15,9 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "*.thoriumlabs.ai"
+        "https://*.thoriumlabs.ai",
+        "https://thoriumlabs.ai",
+        "https://www.thoriumlabs.ai",
     ],
     allow_credentials=True,
     allow_methods=["*"],
