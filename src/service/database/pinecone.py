@@ -35,20 +35,20 @@ class PineconeVectorStore:
 
         index = pinecone.Index('demo')
 
-        for i in range(0, len(data)):
-            i_end = min(i + self.batch_size, len(data))
-            lines_batch = data[i: i + self.batch_size]
-            ids_batch = [str(n) for n in range(i, i_end)]
-            res = self._create_embeddings(data)
-            embeds = [record['embedding'] for record in res['data']]
-            meta = [metadata + {'text': line} for line in lines_batch]
-            to_upsert = zip(ids_batch, embeds, meta)
-
-            index.upsert(vectors=list(to_upsert))
-
-        pass
+        embed = self._create_embeddings(data)
+        metadata.update({'text': data})
+        to_upsert = zip([data], [embed], [metadata])
+        index.upsert(vectors=list(to_upsert))
 
     def _create_embeddings(self, data: str):
-        embeddings = openai.Embedding.create(input=data, engine=self.model)
-        logging.info(f"Created embedding for '{data}': [{embeddings}]")
-        return embeddings
+        embeddings = openai.Embedding.create(input=[data], engine=self.model)
+        logging.info(f"Created embedding for '{data}'")
+        return embeddings['data'][0]['embedding']
+
+    def get_knn(self, query: str):
+        query_embedding = self._create_embeddings(query)
+        index = pinecone.Index('demo')
+        res = index.query(query_embedding, top_k=2, include_metadata=True)
+        logging.info(f"Retrieved top 2 embeddings for '{query}'")
+        logging.info(res)
+        return res

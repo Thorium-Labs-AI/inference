@@ -9,3 +9,8 @@ class ChatHistoryItem(BaseModel):
 class ChatRequestPayload(BaseModel):
     message: str
     history: list[ChatHistoryItem]
+
+
+class EmbeddingInsertionPayload(BaseModel):
+    text: str
+    meta: dict
