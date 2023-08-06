@@ -6,7 +6,7 @@ import pinecone
 from dotenv import load_dotenv
 
 
-class PineconeVectorStore:
+class VectorStore:
     def __init__(self, batch_size=32):
         load_dotenv()
 
@@ -28,6 +28,9 @@ class PineconeVectorStore:
                 api_key=pinecone_api_key,
                 environment="us-west4-gcp-free"
             )
+
+    def insert_chunks(self, chunks: list[str]):
+        pass
 
     def insert_data(self, data: str, metadata: dict):
         if 'demo' not in pinecone.list_indexes():

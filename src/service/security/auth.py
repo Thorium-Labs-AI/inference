@@ -12,3 +12,7 @@ def authenticated(credentials: HTTPAuthorizationCredentials = Depends(token_auth
     if status:
         raise HTTPException(status_code=403, detail=f"You are not allowed to access this endpoint.")
     return credentials.credentials
+
+
+def is_customer(credentials: str) -> bool:
+    return False
