@@ -1,6 +1,9 @@
 import nltk
 from nltk import sent_tokenize
 
+nltk.download("stopwords")
+nltk.download("punkt")
+
 
 def remove_stopwords(text: str) -> str:
     stopwords = nltk.corpus.stopwords.words('english')
@@ -9,8 +12,14 @@ def remove_stopwords(text: str) -> str:
     return processed_tokens
 
 
-def create_chunks(text: str, token_overlap: int, max_chars: int = 0):
-    # TODO: implement max_chars limit
+def create_chunks(text: str, chunk_size: int, sentence_overlap: int):
     sentences = sent_tokenize(text)
-    chunks = [sentences[i:i + 5] for i in range(0, len(sentences), 5 - token_overlap)]
+    chunks = []
+    i = 0
+
+    while i < len(sentences):
+        end_index = min(i + chunk_size, len(sentences))
+        chunk = sentences[i:end_index]
+        chunks.append(' '.join(chunk))
+        i = i + (chunk_size - sentence_overlap)
     return chunks

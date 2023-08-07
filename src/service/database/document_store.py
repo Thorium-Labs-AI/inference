@@ -2,23 +2,35 @@ import logging
 
 import boto3
 
+from src.config.get_config import config
 from src.models.DocumentMetadataModel import DocumentMetadataModel
-from src.utils.context_utils import hash_document_chunk
+from src.utils.aws import get_table
 
 
 class DocumentStore:
     def __init__(self):
         self.dynamodb_conn = boto3.resource('dynamodb')
-        self.customer_documents_table = self.dynamodb_conn.Table('customer_documents')
-        self.document_chunks_table = self.dynamodb_conn.Table('document_chunks')
+        self.customer_documents_table = get_table(config.customer_documents_table)
+        self.document_chunks_table = get_table(config.document_chunks_table)
 
-    def insert_chunks(self, chunks: list[str], meta: DocumentMetadataModel):
+    def insert_document(self, document_name: str, meta: DocumentMetadataModel):
+        logging.info(f'Inserting document record into customer documents table...')
+        self.customer_documents_table.put_item(
+            Item={
+                'customerID': meta.customer,
+                'documentID': document_name,
+                'metadata': meta.dict(),
+            }
+        )
+
+    def insert_chunks(self, document_id: str, chunks: list[str], meta: DocumentMetadataModel):
+        logging.info(f'Inserting chunks into document chunks table...')
         for i, chunk in enumerate(chunks):
-            logging.info(f'Inserting chunk {chunk}')
             self.document_chunks_table.put_item(
                 Item={
-                    'id': hash_document_chunk(chunk_index=i, document=meta.document_name, customer=meta.customer),
-                    'metadata': meta,
-                    'chunk': ' '.join(chunk)
+                    'documentID': document_id,
+                    'chunkID': i,
+                    'metadata': meta.dict(),
+                    'chunk': chunk
                 }
             )

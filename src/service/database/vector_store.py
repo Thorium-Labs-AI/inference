@@ -1,33 +1,23 @@
 import logging
-import os
 
 import openai
 import pinecone
-from dotenv import load_dotenv
+
+from src.utils.shared import from_env
 
 
 class VectorStore:
     def __init__(self, batch_size=32):
-        load_dotenv()
-
         self.model = 'text-embedding-ada-002'
         self.batch_size = batch_size
 
-        openai_api_key = os.environ["OPENAI_KEY"]
-        pinecone_api_key = os.environ["PINECONE_KEY"]
+        openai_api_key = from_env("OPENAI_KEY", throw_err=True)
+        pinecone_api_key = from_env("PINECONE_KEY", throw_err=True)
 
-        if len(openai_api_key) == 0:
-            raise ValueError("OPENAI_KEY is not set")
-        else:
-            openai.api_key = openai_api_key
-
-        if len(pinecone_api_key) == 0:
-            raise ValueError("PINECONE_KEY is not set")
-        else:
-            pinecone.init(
-                api_key=pinecone_api_key,
-                environment="us-west4-gcp-free"
-            )
+        pinecone.init(
+            api_key=pinecone_api_key,
+            environment="us-west4-gcp-free"
+        )
 
     def insert_chunks(self, chunks: list[str]):
         pass

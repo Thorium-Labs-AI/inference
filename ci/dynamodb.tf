@@ -9,7 +9,7 @@ resource "aws_dynamodb_table" "document_chunks_table" {
   }
   attribute {
     name = "chunkID" # ID of chunk inside a document
-    type = "S"
+    type = "N"
   }
   hash_key  = "documentID"
   range_key = "chunkID"
