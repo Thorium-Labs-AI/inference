@@ -1,7 +1,7 @@
 # ECS Execution Role
 resource aws_iam_role ecs_execution_role {
   name               = "${var.project_name}-ecs-task-execution-role"
-  assume_role_policy = data.aws_iam_policy_document.ecs_task_assume_role_policy.json
+  assume_role_policy = data.aws_iam_policy_document.ecs_execution_role_policy.json
 }
 
 data aws_iam_policy_document ecs_execution_role_policy {
@@ -56,7 +56,7 @@ data aws_iam_policy_document ecs_task_role_policy {
       "dynamodb:DescribeTable"
     ]
 
-    resources = [*]
+    resources = ["*"]
   }
 }
 
