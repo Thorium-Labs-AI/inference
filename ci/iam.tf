@@ -17,7 +17,7 @@ data aws_iam_policy_document assume {
 data aws_iam_policy_document ecs_execution_role_policy {
   statement {
     effect    = "Allow"
-    actions   = ["ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage", "ecr:GetAuthorizationToken"]
+    actions   = ["ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage", "ecr:GetAuthorizationToken", "logs:CreateLogStream"]
     resources = ["*"]
   }
 }
