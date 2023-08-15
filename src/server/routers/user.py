@@ -7,7 +7,7 @@ from src.service.chat_service import process_message
 router = APIRouter()
 
 
-@router.post("/message/", tags=["chatbot"], dependencies=[Depends(RateLimiter(times=30, hours=12))])
+@router.post("/message/", tags=["chatbot"], dependencies=[Depends(RateLimiter(times=50, hours=12))])
 async def send_message_to_chatbot(request: ChatRequestPayload):
     response = process_message(request)
     if response is None:

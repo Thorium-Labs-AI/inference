@@ -8,7 +8,7 @@ from starlette import status
 from src.models.InputPayloadModels import ChatHistoryItem
 from src.service.analytics.cost import handle_token_costs
 from src.service.chatbots.chatbot import Chatbot
-from src.service.context_service import get_system_message
+from src.service.context_service import ContextService
 from src.utils.shared import from_env
 
 
@@ -18,6 +18,7 @@ class OpenAIBaseChatbot(Chatbot):
 
         self.model = model_name
         self.temperature = temperature
+        self.context_service = ContextService()
         openai.api_key = from_env("OPENAI_KEY", throw_err=True)
 
     def get_answer(self, question: str, history: list[ChatHistoryItem] = None, context: Optional[str] = None):
@@ -28,9 +29,10 @@ class OpenAIBaseChatbot(Chatbot):
 
         chat_history: list[dict] = [{"role": "user" if item.isUser else "assistant", "content": item.text} for item in
                                     history]
-        messages: list[dict] = [get_system_message(question)] + chat_history + [openai_query]
-
-        logging.info(f'Creating completion for messages: {messages}')
+        messages: list[dict] = [self.context_service.get_system_message(query=question,
+                                                                        customer_id='HardcodedCustomer',
+                                                                        chatbot_id='my-base-chatbot')] + chat_history + [
+                                   openai_query]
 
         try:
             res = openai.ChatCompletion.create(

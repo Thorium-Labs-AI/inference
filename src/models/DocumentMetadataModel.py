@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 
 class DocumentMetadataModel(BaseModel):
-    customer: str
     language: Optional[str]
-    tags: dict
+    tags: list
     format: str

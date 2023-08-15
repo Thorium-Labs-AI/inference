@@ -1,30 +1,28 @@
-from src.models.InputPayloadModels import ConfigUpsertPayload
+import boto3
+
+from src.config.get_config import config
+from src.models.ChatbotConfig import ChatbotConfig, DynamoDBConfigResponse
+from src.utils.aws import get_table
 
 
-def update_config(customer: str, payload: ConfigUpsertPayload):
-    pass
-    # if payload.dict(exclude_none=True) == {}:
-    #     raise ValueError("Changeset is empty.")
-    #
-    # dynamodb = boto3.resource('dynamodb')
-    #
-    # table_name = 'configuration'
-    # table = dynamodb.Table(table_name)
-    #
-    # payload_dict = payload.dict(exclude_none=True)
-    #
-    # update_expression = 'SET '
-    # expression_attribute_values = {}
-    # for key, value in payload_dict.items():
-    #     update_expression += f"{key} = :{key}, "
-    #     expression_attribute_values[f":{key}"] = value
-    # update_expression = update_expression.rstrip(", ")
-    #
-    # response = table.update_item(
-    #     Key={'customer': customer},
-    #     UpdateExpression=update_expression,
-    #     ExpressionAttributeValues=expression_attribute_values,
-    #     ReturnValues='UPDATED_NEW'
-    # )
-    #
-    # return response
+class ConfigStore:
+    def __init__(self):
+        self.dynamodb_conn = boto3.resource('dynamodb')
+        self.customer_chatbots_table = get_table(config.customer_chatbots_table)
+
+    def update_config(self, chatbot_config: ChatbotConfig):
+        self.customer_chatbots_table.put_item(
+            Item=chatbot_config.dict()
+        )
+
+    def get_task_definition(self, customer_id: str = 'HardcodedCustomer', chatbot_id: str = 'my-base-chatbot'):
+        dynamodb_res = self.customer_chatbots_table.get_item(
+            Key={
+                'customer_id': customer_id,
+                'chatbot_id': chatbot_id
+            },
+            AttributesToGet=['task_definition'],
+            ConsistentRead=False
+        )
+
+        return DynamoDBConfigResponse(**dynamodb_res).Item.task_definition

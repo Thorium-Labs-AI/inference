@@ -12,7 +12,7 @@ def remove_stopwords(text: str) -> str:
     return processed_tokens
 
 
-def create_chunks(text: str, chunk_size: int, sentence_overlap: int):
+def create_chunk_contents(text: str, chunk_size: int, sentence_overlap: int):
     sentences = sent_tokenize(text)
     chunks = []
     i = 0

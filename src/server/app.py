@@ -1,9 +1,8 @@
 import logging
 
 import redis.asyncio as redis
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi_limiter import FastAPILimiter
-from fastapi_limiter.depends import RateLimiter
 from starlette.middleware.cors import CORSMiddleware
 
 from .routers.management import router as management_router
@@ -38,6 +37,6 @@ app.add_middleware(
 )
 
 
-@app.get("/", dependencies=[Depends(RateLimiter(times=5, hours=1))])
+@app.get("/")
 def read_root():
     return {"message": "Thank you for using Flow! 🚀"}

@@ -4,15 +4,15 @@ resource "aws_dynamodb_table" "document_chunks_table" {
   read_capacity  = "30"
   write_capacity = "30"
   attribute {
-    name = "documentID" # a unique hash of customer id + document id
+    name = "document_id" # a unique hash of customer id + document id
     type = "S"
   }
   attribute {
-    name = "chunkID" # ID of chunk inside a document
+    name = "sequence_number" # ID of chunk inside a document
     type = "N"
   }
-  hash_key  = "documentID"
-  range_key = "chunkID"
+  hash_key  = "document_id"
+  range_key = "sequence_number"
 }
 
 resource "aws_dynamodb_table" "customer_documents_table" {
@@ -41,20 +41,24 @@ resource "aws_dynamodb_table" "customer_documents_table" {
   range_key = "documentID"
 }
 
-resource "aws_dynamodb_table" "configuration_table" {
-  name           = "configuration"
+resource "aws_dynamodb_table" "customer_chatbots_table" {
+  name           = "customer_chatbots"
   billing_mode   = "PROVISIONED"
   read_capacity  = "30"
   write_capacity = "30"
 
   attribute {
-    name = "customerID"
+    name = "customer_id"
     type = "S"
   }
   attribute {
-    name = "chatbotID"
+    name = "chatbot_id"
     type = "S"
   }
-  hash_key  = "customerID"
-  range_key = "chatbotID"
+  attribute {
+    name = "display_name"
+    type = "S"
+  }
+  hash_key  = "customer_id"
+  range_key = "chatbot_id"
 }
