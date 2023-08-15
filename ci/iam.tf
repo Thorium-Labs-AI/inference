@@ -16,11 +16,19 @@ data aws_iam_policy_document assume {
   statement {
     effect  = "Allow"
     actions = ["ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage"]
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
   }
 
   statement {
     effect  = "Allow"
     actions = ["ecr:GetAuthorizationToken"]
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
   }
 }
 
