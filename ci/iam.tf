@@ -12,24 +12,24 @@ data aws_iam_policy_document assume {
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
   }
+}
 
+data aws_iam_policy_document ecs_execution_role_policy {
   statement {
-    effect  = "Allow"
-    actions = ["ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage"]
-    principals {
-      type        = "Service"
-      identifiers = ["ecs-tasks.amazonaws.com"]
-    }
+    effect    = "Allow"
+    actions   = ["ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage", "ecr:GetAuthorizationToken"]
+    resources = ["*"]
   }
+}
 
-  statement {
-    effect  = "Allow"
-    actions = ["ecr:GetAuthorizationToken"]
-    principals {
-      type        = "Service"
-      identifiers = ["ecs-tasks.amazonaws.com"]
-    }
-  }
+resource aws_iam_policy ecs_execution_policy {
+  name   = "${var.project_name}-ecs-execution-policy"
+  policy = data.aws_iam_policy_document.ecs_execution_role_policy.json
+}
+
+resource aws_iam_role_policy_attachment ecs_execution_role_policy_attachment {
+  role       = aws_iam_role.ecs_execution_role.name
+  policy_arn = aws_iam_policy.ecs_execution_policy.arn
 }
 
 
