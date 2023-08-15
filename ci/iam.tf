@@ -14,17 +14,17 @@ data aws_iam_policy_document assume {
     resources = ["*"]
   }
 
-  statement {
-    effect    = "Allow"
-    actions   = ["ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage"]
-    resources = ["*"]
-  }
-
-  statement {
-    effect    = "Allow"
-    actions   = ["ecr:GetAuthorizationToken"]
-    resources = ["*"]
-  }
+  #  statement {
+  #    effect    = "Allow"
+  #    actions   = ["ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage"]
+  #    resources = ["*"]
+  #  }
+  #
+  #  statement {
+  #    effect    = "Allow"
+  #    actions   = ["ecr:GetAuthorizationToken"]
+  #    resources = ["*"]
+  #  }
 }
 
 
