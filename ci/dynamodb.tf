@@ -22,19 +22,11 @@ resource "aws_dynamodb_table" "customer_documents_table" {
   write_capacity = "30"
 
   attribute {
-    name = "customerID"
+    name = "customer_id"
     type = "S"
   }
   attribute {
-    name = "documentID"
-    type = "S"
-  }
-  attribute {
-    name = "title"
-    type = "S"
-  }
-  attribute {
-    name = "description"
+    name = "document_id"
     type = "S"
   }
   hash_key  = "customerID"
@@ -53,10 +45,6 @@ resource "aws_dynamodb_table" "customer_chatbots_table" {
   }
   attribute {
     name = "chatbot_id"
-    type = "S"
-  }
-  attribute {
-    name = "display_name"
     type = "S"
   }
   hash_key  = "customer_id"
