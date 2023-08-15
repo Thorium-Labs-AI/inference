@@ -26,7 +26,7 @@ data aws_iam_policy_document ecs_execution_role_policy {
   }
 }
 
-resource aws_iam_policy ecs_execution_policy {
+resource aws_iam_role_policy ecs_execution_policy {
   name   = "${var.project_name}-ecs-execution_policy"
   role   = aws_iam_role.ecs_execution_role.id
   policy = data.aws_iam_policy_document.ecs_execution_role_policy
