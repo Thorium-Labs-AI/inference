@@ -29,8 +29,8 @@ resource "aws_dynamodb_table" "customer_documents_table" {
     name = "document_id"
     type = "S"
   }
-  hash_key  = "customerID"
-  range_key = "documentID"
+  hash_key  = "customer_id"
+  range_key = "document_id"
 }
 
 resource "aws_dynamodb_table" "customer_chatbots_table" {
