@@ -11,20 +11,17 @@ data aws_iam_policy_document assume {
       type        = "Service"
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
-    resources = ["*"]
   }
 
-  #  statement {
-  #    effect    = "Allow"
-  #    actions   = ["ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage"]
-  #    resources = ["*"]
-  #  }
-  #
-  #  statement {
-  #    effect    = "Allow"
-  #    actions   = ["ecr:GetAuthorizationToken"]
-  #    resources = ["*"]
-  #  }
+  statement {
+    effect  = "Allow"
+    actions = ["ecr:GetDownloadUrlForLayer", "ecr:BatchGetImage"]
+  }
+
+  statement {
+    effect  = "Allow"
+    actions = ["ecr:GetAuthorizationToken"]
+  }
 }
 
 
