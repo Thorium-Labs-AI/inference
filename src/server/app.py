@@ -8,7 +8,6 @@ from starlette.middleware.cors import CORSMiddleware
 from .routers.inference import router as inference_router
 from .routers.management import router as management_router
 from ..config.get_config import config
-from ..service.security.cors import allowed_origins
 
 logging.basicConfig(level=logging.INFO)
 
@@ -30,8 +29,8 @@ app.include_router(management_router, prefix="/management")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
     allow_credentials=True,
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )

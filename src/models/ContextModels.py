@@ -29,15 +29,6 @@ class OpenAIEmbeddingResponse(BaseModel):
     data: list[OpenAIEmbeddingPayload]
 
 
-class PineconeQueryResponse(BaseModel):
-    class PineconeQueryPayload(BaseModel):
-        id: str
-        metadata: Chunk
-        score: int
-
-    matches: list[PineconeQueryPayload]
-
-
 class DynamoDBChunkResponse(BaseModel):
     class DynamoDBChunkPayload(BaseModel):
         chunk: str

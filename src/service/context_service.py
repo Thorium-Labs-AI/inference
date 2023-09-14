@@ -3,7 +3,6 @@ from hashlib import sha256
 
 from src.models.ContextModels import Chunk, ChunkIdentifier
 from src.models.DocumentMetadataModel import DocumentMetadataModel
-from src.service.database.config_store import ConfigStore
 from src.service.database.document_store import DocumentStore
 from src.service.database.vector_store import VectorStore
 from src.utils.text_preprocessing import create_chunk_contents
@@ -21,7 +20,6 @@ class ContextService:
     def __init__(self):
         self.vector_store = VectorStore()
         self.document_store = DocumentStore()
-        self.config_store = ConfigStore()
 
     def insert_embedding(self, document_name: str, customer: str, content: str, metadata: DocumentMetadataModel):
         logging.info(f'Inserting document {document_name} for {customer}')
@@ -48,17 +46,3 @@ class ContextService:
             text_chunks.append(self.document_store.get_document_chunk(chunk))
 
         return text_chunks
-
-    def get_system_message(self, customer_id: str, chatbot_id: str, query: str) -> dict[str]:
-        # Since System messages are more frequently ignored, the initial instructions are in user mode.
-        sys_message = {
-            "role": "user",
-            "content": f"""
-                Instructions: {self.config_store.get_task_definition()}
-                ---
-                Context: {self.get_knn(query)}
-                ---
-                """
-        }
-
-        return sys_message

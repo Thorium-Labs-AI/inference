@@ -11,7 +11,7 @@ class ChatHistoryItem(BaseModel):
     text: str
 
 
-class MessageInferencePayload(BaseModel):
+class MessageInferenceBody(BaseModel):
     language_model: str
     instructions: str
     context: str
@@ -19,12 +19,31 @@ class MessageInferencePayload(BaseModel):
     history: list[ChatHistoryItem]
 
 
-chatbot = OpenAIBaseChatbot()
+def get_system_payload(instructions: str, context: str) -> dict[str]:
+    # Since System messages are more frequently ignored, the initial instructions are in user mode.
+    sys_message = {
+        "role": "user",
+        "content": f"""
+            Instructions: {instructions}
+            ---
+            Context: {context: str}
+            ---
+            """
+    }
+
+    return sys_message
+
+
+inference = OpenAIBaseChatbot()
 
 
 @router.post("/messages/", tags=["chatbot"])
-async def get_chatbot_response(request: MessageInferencePayload):
-    response = chatbot.get_answer(request.message, request.history)
+async def get_chatbot_response(body: MessageInferenceBody):
+    system_payload = get_system_payload(instructions=body.instructions, context=body.context)
+    response = inference.get_response(language_model=body.language_model,
+                                      system_payload=system_payload,
+                                      user_message=body.message,
+                                      history=body.history)
 
     if response is None:
         raise HTTPException(status_code=500, detail="Chatbot could not retrieve a response.")
