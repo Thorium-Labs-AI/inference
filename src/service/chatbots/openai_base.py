@@ -5,7 +5,6 @@ import openai
 from fastapi import HTTPException
 from starlette import status
 
-from src.models.InputPayloadModels import ChatHistoryItem
 from src.service.analytics.cost import handle_token_costs
 from src.service.chatbots.chatbot import Chatbot
 from src.service.context_service import ContextService

@@ -1,12 +1,20 @@
 import logging
+from hashlib import sha256
 
 from src.models.ContextModels import Chunk, ChunkIdentifier
 from src.models.DocumentMetadataModel import DocumentMetadataModel
 from src.service.database.config_store import ConfigStore
 from src.service.database.document_store import DocumentStore
 from src.service.database.vector_store import VectorStore
-from src.utils.context_utils import hash_document
 from src.utils.text_preprocessing import create_chunk_contents
+
+
+def hash_document(customer: str, document: str):
+    input_string = f'{customer}-{document}'
+
+    hash_object = sha256(input_string.encode())
+    hex_dig = hash_object.hexdigest()
+    return hex_dig
 
 
 class ContextService:

@@ -5,8 +5,8 @@ from fastapi import FastAPI
 from fastapi_limiter import FastAPILimiter
 from starlette.middleware.cors import CORSMiddleware
 
+from .routers.inference import router as inference_router
 from .routers.management import router as management_router
-from .routers.user import router as client_router
 from ..config.get_config import config
 from ..service.security.cors import allowed_origins
 
@@ -25,7 +25,7 @@ async def startup():
         logging.error(f'Starting FastAPI limiter failed. Reason: {e}')
 
 
-app.include_router(client_router, prefix="/chat")
+app.include_router(inference_router, prefix="/inference")
 app.include_router(management_router, prefix="/management")
 
 app.add_middleware(

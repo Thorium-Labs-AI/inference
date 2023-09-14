@@ -1,10 +1,10 @@
 data "aws_route53_zone" "main" {
-  name = "asterisk.chat"
+  name = "thoriumlabs.ai"
 }
 
 resource "aws_route53_record" "www" {
   zone_id = data.aws_route53_zone.main.zone_id
-  name    = "www.api.asterisk.chat"
+  name    = "www.api.thoriumlabs.ai"
   type    = "A"
 
   alias {
@@ -16,7 +16,7 @@ resource "aws_route53_record" "www" {
 
 resource "aws_route53_record" "root" {
   zone_id = data.aws_route53_zone.main.zone_id
-  name    = "api.asterisk.chat"
+  name    = "api.thoriumlabs.ai"
   type    = "A"
 
   alias {
