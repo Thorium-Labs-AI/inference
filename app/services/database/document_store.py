@@ -3,8 +3,8 @@ import logging
 import boto3
 
 from src.config.get_config import config
-from src.models.ContextModels import DynamoDBChunkResponse, ChunkIdentifier, Chunk
-from src.models.DocumentMetadataModel import DocumentMetadataModel
+from src.models.context_models import DynamoDBChunkResponse, ChunkIdentifier, Chunk
+from src.models.document_models import DocumentMetadataModel
 from src.utils.aws import get_table
 
 

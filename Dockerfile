@@ -33,13 +33,13 @@ ENV REDIS_PASSWORD=$REDIS_PASSWORD
 
 
 # Install the requirements
-COPY /src/requirements.txt /src/
-RUN pip install --no-cache-dir -r /src/requirements.txt
+COPY /requirements.txt /src/
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Set the working directory in the container
 WORKDIR /src
 
-# Copy the current directory contents into the container at /src
+# Copy the current directory contents into the container at /app
 COPY . /src/
 
 # Expose the port the app runs in

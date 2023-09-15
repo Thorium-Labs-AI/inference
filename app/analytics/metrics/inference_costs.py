@@ -8,7 +8,7 @@ model_token_pricing = {
 }
 
 
-def handle_token_costs(request_token_count, response_token_count, model):
+def get_inference_estimate(request_token_count, response_token_count, model):
     pricing_info = model_token_pricing[model]
     if not pricing_info:
         logging.error(f"Cannot fetch pricing for model {model}")

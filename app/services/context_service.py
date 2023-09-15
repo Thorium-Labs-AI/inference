@@ -1,8 +1,8 @@
 import logging
 from hashlib import sha256
 
-from src.models.ContextModels import Chunk, ChunkIdentifier
-from src.models.DocumentMetadataModel import DocumentMetadataModel
+from src.models.context_models import Chunk, ChunkIdentifier
+from src.models.document_models import DocumentMetadataModel
 from src.service.database.document_store import DocumentStore
 from src.service.database.vector_store import VectorStore
 from src.utils.text_preprocessing import create_chunk_contents

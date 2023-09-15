@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from src.models.DocumentMetadataModel import DocumentMetadataModel
+from src.models.document_models import DocumentMetadataModel
 
 
 class EmbeddingInsertPayload(BaseModel):

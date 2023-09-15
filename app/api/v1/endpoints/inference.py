@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-from src.service.chatbots.openai_base import OpenAIBaseChatbot
+from src.service.chatbots.chatbot import Chatbot
 
 router = APIRouter()
 
@@ -34,7 +34,7 @@ def get_system_payload(instructions: str, context: str) -> dict[str]:
     return sys_message
 
 
-inference = OpenAIBaseChatbot()
+inference = Chatbot()
 
 
 @router.post("/messages/", tags=["chatbot"])

@@ -2,7 +2,7 @@ import openai
 import pinecone
 
 from src.config.get_config import config
-from src.models.ContextModels import OpenAIEmbeddingResponse, Chunk
+from src.models.context_models import OpenAIEmbeddingResponse, Chunk
 
 
 class VectorStore:

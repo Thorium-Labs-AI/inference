@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from starlette import status
 
-from src.models.ContextModels import EmbeddingInsertPayload
+from src.models.context_models import EmbeddingInsertPayload
 from src.service.context_service import ContextService
 
 router = APIRouter()
