@@ -1,52 +1,18 @@
 resource "aws_dynamodb_table" "document_chunks_table" {
   name           = "document_chunks"
-  billing_mode   = "PROVISIONED"
-  read_capacity  = "30"
-  write_capacity = "30"
+  billing_mode   = "PAY_PER_REQUEST"
   attribute {
     name = "document_id" # a unique hash of customer id + document id
     type = "S"
   }
   attribute {
-    name = "sequence_number" # ID of chunk inside a document
+    name = "chunk_id" # ID of chunk inside a document
     type = "N"
+  }
+   attribute {
+    name = "content" # Text content of chunk
+    type = "S"
   }
   hash_key  = "document_id"
   range_key = "sequence_number"
-}
-
-resource "aws_dynamodb_table" "customer_documents_table" {
-  name           = "customer_documents"
-  billing_mode   = "PROVISIONED"
-  read_capacity  = "30"
-  write_capacity = "30"
-
-  attribute {
-    name = "customer_id"
-    type = "S"
-  }
-  attribute {
-    name = "document_id"
-    type = "S"
-  }
-  hash_key  = "customer_id"
-  range_key = "document_id"
-}
-
-resource "aws_dynamodb_table" "customer_chatbots_table" {
-  name           = "customer_chatbots"
-  billing_mode   = "PROVISIONED"
-  read_capacity  = "30"
-  write_capacity = "30"
-
-  attribute {
-    name = "customer_id"
-    type = "S"
-  }
-  attribute {
-    name = "chatbot_id"
-    type = "S"
-  }
-  hash_key  = "customer_id"
-  range_key = "chatbot_id"
 }

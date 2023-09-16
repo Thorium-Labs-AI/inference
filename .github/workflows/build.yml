@@ -49,8 +49,5 @@ jobs:
             --build-arg AUTH0_CLIENT_ID=${{ vars.AUTH0_CLIENT_ID }} \
             --build-arg AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET }} \
             --build-arg AWS_DEFAULT_REGION=${{ vars.AWS_REGION }} \
-            --build-arg REDIS_USERNAME=${{ vars.REDIS_USERNAME }} \
-            --build-arg REDIS_HOST=${{ vars.REDIS_HOST }} \
-            --build-arg REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} \
             -t $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG .
           docker push $ECR_REGISTRY/${{ env.ECR_REPOSITORY }}:$IMAGE_TAG
