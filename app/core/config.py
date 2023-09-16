@@ -2,14 +2,12 @@ from enum import Enum
 
 from pydantic import BaseModel, ValidationError
 
-from ..utils.shared import from_env
+from app.core.utils.environment import from_env
 
 
 class AppConfig(BaseModel):
-    chatbot_s3_bucket: str
-    customer_chatbots_table: str
     document_chunks_table: str
-    customer_documents_table: str
+    documents_table: str
     pinecone_index: str
     pinecone_api_key: str
     embedding_model: str
@@ -30,18 +28,14 @@ def get_config_for_env(env: Environment) -> AppConfig:
 
     if env == Environment.PRODUCTION:
         specific_config = {
-            "chatbot_s3_bucket": "chatbot_frontend_configs",
-            "customer_chatbots_table": "customer_chatbots",
             "document_chunks_table": "document_chunks",
-            "customer_documents_table": "customer_documents",
+            "documents_table": "customer_documents",
             "pinecone_index": "embeddings"
         }
     elif env == Environment.DEVELOPMENT:
         specific_config = {
-            "chatbot_s3_bucket": "chatbot_frontend_configs_dev",
-            "customer_chatbots_table": "customer_chatbots_dev",
             "document_chunks_table": "document_chunks_dev",
-            "customer_documents_table": "customer_documents_dev",
+            "documents_table": "customer_documents_dev",
             "pinecone_index": "embeddings-dev"
         }
     else:

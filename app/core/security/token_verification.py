@@ -1,6 +1,7 @@
 import os
-import jwt
 from configparser import ConfigParser
+
+import jwt
 
 
 def get_auth0_config(config_env=None):
@@ -16,7 +17,6 @@ def get_auth0_config(config_env=None):
             "ALGORITHMS": os.getenv("ALGORITHMS", "RS256"),
         }
     return config
-
 
 
 class Auth0TokenVerifier:

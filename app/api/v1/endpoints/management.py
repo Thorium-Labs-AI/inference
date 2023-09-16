@@ -1,15 +1,23 @@
 from fastapi import APIRouter
 from starlette import status
 
-from src.models.context_models import EmbeddingInsertPayload
-from src.service.context_service import ContextService
+from app.schemas.documents.delete import DocumentDeleteBody
+from app.schemas.documents.insert import DocumentInsertResponse, DocumentInsertBody
+from app.services.documents import storage
 
 router = APIRouter()
 
 
-@router.post("/embeddings/", tags=["embedding"], status_code=status.HTTP_201_CREATED)
-async def insert_document(request: EmbeddingInsertPayload):
-    context_service = ContextService()
-    context_service.insert_embedding(document_name=request.document_name, content=request.content,
-                                     metadata=request.metadata, customer="HardcodedCustomer")
-    return {"response": "Successfully created embeddings."}
+@router.post("/documents/", status_code=status.HTTP_201_CREATED)
+async def insert_document(body: DocumentInsertBody) -> DocumentInsertResponse:
+    document_id: str = storage.insert_document(body)
+    return DocumentInsertResponse(id=document_id)
+
+
+@router.delete("/documents/", status_code=status.HTTP_200_OK)
+async def delete_document(body: DocumentDeleteBody):
+    storage.delete_document(body)
+    return {
+        "response": "ok",
+        "message": "Successfully deleted document."
+    }

@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from endpoints.inference import router as inference_router
-from endpoints.management import router as management_router
-from endpoints.public import router as public_router
+from .endpoints.inference import router as inference_router
+from .endpoints.management import router as management_router
+from .endpoints.public import router as public_router
 
 router = APIRouter()
 
