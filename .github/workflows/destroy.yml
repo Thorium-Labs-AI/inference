@@ -10,7 +10,7 @@ env:
   CONFIG_DIRECTORY: ./ci
 
 jobs:
-  terraform:
+  destroy:
     name: "Terraform Destroy"
     runs-on: ubuntu-latest
     permissions:
