@@ -14,5 +14,5 @@ resource "aws_dynamodb_table" "document_chunks_table" {
     type = "S"
   }
   hash_key  = "document_id"
-  range_key = "sequence_number"
+  range_key = "chunk_id"
 }
