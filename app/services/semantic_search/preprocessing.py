@@ -5,14 +5,7 @@ nltk.download("stopwords")
 nltk.download("punkt")
 
 
-def remove_stopwords(text: str) -> str:
-    stopwords = nltk.corpus.stopwords.words('english')
-    raw_tokens = text.split(' ')
-    processed_tokens = ' '.join([i for i in raw_tokens if i not in stopwords])
-    return processed_tokens
-
-
-def create_chunk_contents(text: str, chunk_size: int, sentence_overlap: int):
+def split_text(text: str, chunk_size: int, sentence_overlap: int):
     sentences = sent_tokenize(text)
     chunks = []
     i = 0

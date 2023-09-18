@@ -9,7 +9,7 @@ table = get_table(config.document_chunks_table)
 
 
 def insert_document_chunks(chunks: list[str]):
-    document_id = uuid.uuid4()
+    document_id = str(uuid.uuid4())
 
     for chunk_id, chunk in enumerate(chunks):
         table.put_item(
@@ -20,7 +20,7 @@ def insert_document_chunks(chunks: list[str]):
             }
         )
 
-    return {"document_id": document_id}
+    return document_id
 
 
 def delete_document(document_id: str):
@@ -32,6 +32,6 @@ def delete_document(document_id: str):
         table.delete_item(
             Key={
                 'document_id': item['document_id'],
-                'sequence_number': item['sequence_number']
+                'chunk_id': item['chunk_id']
             }
         )

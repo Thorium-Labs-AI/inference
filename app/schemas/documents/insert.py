@@ -2,9 +2,10 @@ from pydantic import BaseModel
 
 
 class DocumentInsertBody(BaseModel):
-    name: str
     content: str
-    description: str
+    tenant: str
+    chunk_size: int
+    sentence_overlap: int
 
 
 class DocumentInsertResponse(BaseModel):

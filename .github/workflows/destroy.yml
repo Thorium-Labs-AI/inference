@@ -7,7 +7,7 @@ env:
   TF_CLOUD_ORGANIZATION: "AsteriskChat"
   TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
   TF_WORKSPACE: chat-server
-  CONFIG_DIRECTORY: ./ci
+  CONFIG_DIRECTORY: ./infra
 
 jobs:
   destroy:
@@ -28,22 +28,22 @@ jobs:
         id: format
         continue-on-error: true
         run: terraform fmt
-        working-directory: ./ci
+        working-directory: ./infra
 
       - name: Terraform Init
         id: init
         run: terraform init
-        working-directory: ./ci
+        working-directory: ./infra
 
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
-        working-directory: ./ci
+        working-directory: ./infra
 
       - name: Terraform Plan
         id: tf-plan
         run: terraform plan
-        working-directory: ./ci
+        working-directory: ./infra
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
@@ -51,8 +51,8 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply --auto-approve
-        working-directory: ./ci
+        working-directory: ./infra
 
       - name: Terraform Destroy
         run: terraform destroy --auto-approve
-        working-directory: ./ci
+        working-directory: ./infra

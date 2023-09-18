@@ -5,6 +5,11 @@ from starlette.middleware.cors import CORSMiddleware
 
 from api.v1.router import router as router_v1
 
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+
 app = FastAPI(
     title="Thorium Labs - Client API",
     description="The REST interface for chat-based LLMs. \n Developed by Thorium Labs Inc.",
