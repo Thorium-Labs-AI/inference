@@ -59,7 +59,8 @@ data aws_iam_policy_document ecs_task_role_policy {
       "dynamodb:BatchGetItem",
       "dynamodb:DeleteItem",
       "dynamodb:UpdateItem",
-      "dynamodb:DescribeTable"
+      "dynamodb:DescribeTable",
+      "dynamodb:Query"
     ]
 
     resources = ["*"]
