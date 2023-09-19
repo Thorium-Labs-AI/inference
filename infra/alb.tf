@@ -1,3 +1,8 @@
+data aws_acm_certificate api_certificate {
+  domain = aws_route53_record.root.name
+  tags = ["api-certificate"]
+}
+
 resource aws_alb alb {
   name               = var.project_name
   load_balancer_type = "application"
@@ -27,7 +32,7 @@ resource "aws_alb_listener" "alb_listener" {
   port              = 443
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:acm:us-east-1:883869506849:certificate/778ef356-1812-49e8-9bf1-9943a664e470"
+  certificate_arn   = data.aws_acm_certificate.api_certificate.arn
 
   default_action {
     type             = "forward"
