@@ -17,5 +17,8 @@ def insert_vectors(document_id: str, vectors: OpenAIEmbedding, tenant: str):
     index.upsert(vectors=embedding_vectors)
 
 
-def delete_vectors(tags: list[str]):
-    pass
+def delete_document_vectors(document_id: str):
+    index.delete(filter={
+        'document_id': document_id
+    })
+

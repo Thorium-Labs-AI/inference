@@ -1,3 +1,5 @@
+import logging
+
 from app.db.documents import storage as document_storage
 from app.db.vectors import storage as vector_storage
 from app.schemas.documents.delete import DocumentDeleteBody
@@ -18,4 +20,8 @@ def insert_document(body: DocumentInsertBody) -> str:
 
 
 def delete_document(body: DocumentDeleteBody):
-    pass
+
+    vector_storage.delete_document_vectors(document_id=body.document_id)
+    document_storage.delete_document(document_id=body.document_id)
+
+    logging.info(f'Deleted document with id {body.document_id}')
