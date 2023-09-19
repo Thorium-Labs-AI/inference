@@ -1,6 +1,5 @@
 data aws_acm_certificate api_certificate {
   domain = aws_route53_record.root.name
-  tags = ["api-certificate"]
 }
 
 resource aws_alb alb {
