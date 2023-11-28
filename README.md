@@ -3,7 +3,7 @@
 Thorium is a REST API to provide a quick way to store documents in vector storage for multiple tenants and to use them for retrieval augmented generation in chat application.
 Its capabilities have more or less been covered by recent changes made to the OpenAI API.
 
-# Technologies
+## Technologies
 
 The API is a FastAPI application, served through AWS Fargate.
 The semantic search and vector storage is done with Pinecone.
